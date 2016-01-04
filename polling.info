@@ -1,0 +1,9 @@
+name = Poll fields
+description = Provide a way to poll specific data of a node in order to do live-updates (and bypass the page cache).
+core = 7.x
+php = 5.4
+
+dependencies[] = field
+dependencies[] = psr0
+
+scripts[] = polling.js
