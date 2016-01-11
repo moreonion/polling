@@ -78,6 +78,19 @@ EndpointRegistry = (function() {
     this.registry = {};
   }
 
+  EndpointRegistry.prototype.registerUrl = function(url, key, callback) {
+    if (!this.registry[url]) {
+      this.registry[url] = new PollingEndpoint({
+        url: url
+      });
+    }
+    return this.registry[url].addCallback(key, callback);
+  };
+
+  EndpointRegistry.prototype.registerGlobal = function(key, callback) {
+    return this.registerUrl('/polling', key, callback);
+  };
+
   EndpointRegistry.prototype.registerEntity = function(type, id, key, callback) {
     var url;
     if (type === 'node') {
@@ -85,12 +98,7 @@ EndpointRegistry = (function() {
     } else {
       return;
     }
-    if (!this.registry[url]) {
-      this.registry[url] = new PollingEndpoint({
-        url: url
-      });
-    }
-    return this.registry[url].addCallback(key, callback);
+    return this.registerUrl(url, key, callback);
   };
 
   EndpointRegistry.prototype.start = function() {

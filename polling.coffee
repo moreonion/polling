@@ -56,15 +56,21 @@ class EndpointRegistry
   constructor: ->
     @registry = {}
 
+  registerUrl: (url, key, callback) ->
+    if not @registry[url]
+      @registry[url] = new PollingEndpoint({url: url})
+    @registry[url].addCallback(key, callback)
+
+  registerGlobal: (key, callback) ->
+    @registerUrl('/polling', key, callback)
+
   registerEntity: (type, id, key, callback) ->
     if type == 'node'
       url = '/node/' + id + '/polling'
     else
       # Only node polling is supported for now.
       return
-    if not @registry[url]
-      @registry[url] = new PollingEndpoint({url: url})
-    @registry[url].addCallback(key, callback)
+    @registerUrl(url, key, callback)
 
   start: ->
     for url, endpoint of @registry

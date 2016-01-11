@@ -16,6 +16,7 @@ class Loader {
   }
 
   protected $fieldTypePlugins;
+  protected $globalPlugins;
 
   public function __construct() {
     $hook = 'polling_field_type_plugin_info';
@@ -26,21 +27,13 @@ class Loader {
       }
     }
     drupal_alter($hook, $this->fieldTypePlugins);
+    $hook = 'polling_global_plugin_info';
+    $this->globalPlugins = \module_invoke_all($hook);
+    drupal_alter($hook, $this->globalPlugins);
   }
 
   /**
-   * Instantiate all classes given a node.
-   */
-  public function loadPluginsByNode($node) {
-    $plugins = [];
-    foreach ($this->classes as $key => $class) {
-      $plugins[$key] = $class::instanceFromNode($node);
-    }
-    return $plugins;
-  }
-
-  /**
-   * Get all field-type plugins for an entity.
+   * Iterator: Get all field-type plugins for an entity.
    */
   public function loadFieldTypePlugins($entity_type, $entity) {
     list(, , $bundle) = entity_extract_ids($entity_type, $entity);
@@ -56,9 +49,18 @@ class Loader {
   }
 
   /**
+   * Iterator: Get all global plugins.
+   */
+  public function loadGlobalPlugins() {
+    foreach ($this->globalPlugins as $class) {
+      yield $class::instance();
+    }
+  }
+
+  /**
    * Iterate over fields.
    */
-  public function iterateFields($entity_type, $bundle) {
+  protected function iterateFields($entity_type, $bundle) {
     foreach (field_info_instances($entity_type, $bundle) as $field_name => $instance) {
       $field = field_info_field_by_id($instance['field_id']);
       yield [$field_name, $field, $instance];

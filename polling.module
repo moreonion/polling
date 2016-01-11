@@ -13,6 +13,12 @@ function polling_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   ];
+  $items['polling'] = [
+    'page callback' => 'polling_global_poll',
+    'access callback' => 'user_access',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  ];
   return $items;
 }
 
@@ -27,6 +33,21 @@ function polling_poll($node) {
   }
 
   $data['nid'] = $node->nid;
+  drupal_add_http_header('Cache-Control', 'public, max-age=5');
+  drupal_json_output($data);
+  exit();
+}
+
+/**
+ * Page callback: Global polling.
+ */
+function polling_global_poll() {
+  $data = [];
+  $loader = Loader::instance();
+  foreach ($loader->loadGlobalPlugins() as $plugin) {
+    $data = array_merge_recursive($data, $plugin->getData());
+  }
+
   drupal_add_http_header('Cache-Control', 'public, max-age=5');
   drupal_json_output($data);
   exit();

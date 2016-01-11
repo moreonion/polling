@@ -16,3 +16,15 @@ function hook_polling_field_type_plugin_info() {
   ];
   return $plugins;
 }
+
+/**
+ * Register a plugin for the global polling page.
+ *
+ * @return array
+ *   An array with fullý qualified class names as values. All classes must
+ *   implement the @see \Drupal\polling\GlobalPluginInterface .
+ */
+function hook_polling_global_plugin_info() {
+  $plugins[] = '\\Drupal\\my_module\\MyPollingPlugin';
+  return $plugins;
+}
