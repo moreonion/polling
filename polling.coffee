@@ -61,17 +61,6 @@ class EndpointRegistry
       @registry[url] = new PollingEndpoint({url: url})
     @registry[url].addCallback(key, callback)
 
-  registerGlobal: (key, callback) ->
-    @registerUrl('/polling', key, callback)
-
-  registerEntity: (type, id, key, callback) ->
-    if type == 'node'
-      url = '/node/' + id + '/polling'
-    else
-      # Only node polling is supported for now.
-      return
-    @registerUrl(url, key, callback)
-
   start: ->
     for url, endpoint of @registry
       endpoint.scheduleNextPoll()
@@ -84,6 +73,6 @@ Drupal.behaviors.polling =
     if $('html', context).length
       defaults =
         initialTimeout: 500,
-      settings = $.extend({}, defaults, settings)
+      settings = $.extend({}, defaults, settings.polling)
       start = => @registry.start()
       setTimeout(start, settings.initialTimeout)

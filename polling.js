@@ -87,20 +87,6 @@ EndpointRegistry = (function() {
     return this.registry[url].addCallback(key, callback);
   };
 
-  EndpointRegistry.prototype.registerGlobal = function(key, callback) {
-    return this.registerUrl('/polling', key, callback);
-  };
-
-  EndpointRegistry.prototype.registerEntity = function(type, id, key, callback) {
-    var url;
-    if (type === 'node') {
-      url = '/node/' + id + '/polling';
-    } else {
-      return;
-    }
-    return this.registerUrl(url, key, callback);
-  };
-
   EndpointRegistry.prototype.start = function() {
     var endpoint, ref, url;
     ref = this.registry;
@@ -122,7 +108,7 @@ Drupal.behaviors.polling = {
       defaults = {
         initialTimeout: 500
       };
-      settings = $.extend({}, defaults, settings);
+      settings = $.extend({}, defaults, settings.polling);
       start = (function(_this) {
         return function() {
           return _this.registry.start();
