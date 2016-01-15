@@ -23,6 +23,7 @@ function polling_menu() {
 }
 
 function _polling_send($data) {
+  drupal_add_http_header("Access-Control-Allow-Origin", "*");
   drupal_add_http_header('Cache-Control', 'public, max-age=5');
   drupal_json_output($data);
   exit();
