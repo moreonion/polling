@@ -36,7 +36,6 @@ PollingEndpoint = (function() {
       return;
     }
     return jQuery.ajax({
-      contentType: 'application/json',
       url: this.settings.url,
       success: (function(_this) {
         return function(data) {

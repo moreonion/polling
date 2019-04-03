@@ -27,7 +27,6 @@ class PollingEndpoint
     return if @stopped
 
     jQuery.ajax({
-      contentType: 'application/json',
       url: @settings.url,
       success: (data) =>
         # Call all callbacks with the data.
