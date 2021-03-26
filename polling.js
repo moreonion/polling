@@ -119,6 +119,7 @@ EndpointRegistry = /*#__PURE__*/function () {
 
       for (url in ref) {
         endpoint = ref[url];
+        endpoint.poll();
         endpoint.scheduleNextPoll();
       }
     }
